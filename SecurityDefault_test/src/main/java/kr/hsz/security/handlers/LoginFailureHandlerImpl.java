@@ -6,19 +6,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Data
 public class LoginFailureHandlerImpl implements AuthenticationFailureHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginFailureHandlerImpl.class);
+//	private static final Logger logger = LoggerFactory.getLogger(LoginFailureHandlerImpl.class);
 	
 	private String userIdName;
 	private String userPwName;

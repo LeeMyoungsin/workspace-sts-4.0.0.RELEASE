@@ -16,13 +16,18 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.ColumnDefault;
 
 import kr.hsz.domain.role.Role;
+import kr.hsz.dto.TempUser;
 import kr.hsz.enums.EnableStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = false, of = "userId")
 public class Account {
@@ -61,5 +66,12 @@ public class Account {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Role> roles;
 
+	public Account(TempUser tempUser) {
+		this.userId = tempUser.getUserId();
+		this.password = tempUser.getUserPassword();
+		this.username = tempUser.getUserName();
+		this.enable = EnableStatus.TRUE;
+		this.roles.add(new Role(4L,"ROLE_TEMP", "임시접근자"));
+	}
 	
 }

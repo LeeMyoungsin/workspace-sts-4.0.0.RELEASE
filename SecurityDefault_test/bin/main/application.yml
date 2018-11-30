@@ -28,3 +28,5 @@ spring:
     check-template: false
     reactive:
       max-chunk-size: 1000
+
+

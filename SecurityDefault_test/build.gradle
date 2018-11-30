@@ -51,7 +51,6 @@ dependencies {
 	compile group: 'com.auth0', name: 'java-jwt', version: '3.4.1'
 	
 	
-	
 }
 
 dependencyManagement {

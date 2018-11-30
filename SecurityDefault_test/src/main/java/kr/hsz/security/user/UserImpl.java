@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.User;
 import kr.hsz.domain.account.Account;
 import kr.hsz.enums.EnableStatus;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserImpl extends User {
 
 	private static final long serialVersionUID = 3272189717118898158L;
@@ -43,11 +45,20 @@ public class UserImpl extends User {
 	}
 	
 	private static List<SimpleGrantedAuthority> parseAuthorities(Account account) {
-		return account
-				.getRoles()
-				.stream()
-				.map(r -> new SimpleGrantedAuthority(r.getName()))
-				.collect(Collectors.toList());
+		logger.info("parseAuthorities <<<<<< ");
+		
+		List<SimpleGrantedAuthority> list = account
+												.getRoles()
+												.stream()
+												.map(r -> new SimpleGrantedAuthority(r.getName()))
+												.collect(Collectors.toList());
+		
+		for(SimpleGrantedAuthority sga : list) {
+			logger.info("권한 리스트 : {}", sga.toString());
+		}
+		
+		
+		return list;
     }
 	
 	

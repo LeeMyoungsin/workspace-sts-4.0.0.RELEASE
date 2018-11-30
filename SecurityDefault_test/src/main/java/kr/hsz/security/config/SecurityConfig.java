@@ -27,13 +27,13 @@ import kr.hsz.security.handlers.LogoutSuccessHandlerImpl;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired private UserDetailsService userDetailsService;
-	@Autowired private PasswordEncoder passwordEncoder;
+	@Autowired private UserDetailsService 		userDetailsService;
+	@Autowired private PasswordEncoder 			passwordEncoder;
 	
-	@Autowired private LoginSuccessHandlerImpl loginSuccessHandler;
-	@Autowired private LoginFailureHandlerImpl loginFailureHandler;
+	@Autowired private LoginSuccessHandlerImpl 	loginSuccessHandler;
+	@Autowired private LoginFailureHandlerImpl 	loginFailureHandler;
 	@Autowired private LogoutSuccessHandlerImpl logoutSuccessHandler;
-	@Autowired private AccessDeniedHandlerImpl accessDeniedHandler;
+	@Autowired private AccessDeniedHandlerImpl 	accessDeniedHandler;
 	
 	
 	@Bean
@@ -73,13 +73,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setForceEncoding(true);
 		http.addFilterBefore(filter,CsrfFilter.class);
 		
+		// h2 console 사용을 위한 설정 시작 
+		http
+			.csrf()
+				.ignoringAntMatchers("/h2console/**");
+		
 		http
 			.headers()
 				.frameOptions()
-				.disable()
-				.and()
+				.sameOrigin()	//.disable()
+		;
+		// h2 console 사용을 위한 설정 끝
+		
+		http
 			.authorizeRequests()
-				.antMatchers("/", "/logout", "/join/**").permitAll()
+				.antMatchers("/", "/join/**", "/resources/**","/loginError","/registration","/h2console/**").permitAll()	// 해당 url을 허용한다.
+		        .antMatchers("/admin/**").hasAnyRole("ADMIN")		// admin 폴더에 경우 admin 권한이 있는 사용자에게만 허용
+		        .antMatchers("/user/**").hasAnyRole("USER")			// user 폴더에 경우 user 권한이 있는 사용자에게만 허용
+		        .antMatchers("/super/**").hasAuthority("ROLE_SUPER")	// user 폴더에 경우 user 권한이 있는 사용자에게만 허용
 				.anyRequest()
 				.authenticated()
 				.and()
@@ -117,19 +128,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.maximumSessions(1)
 				.expiredUrl("/login_duplicate")
 				.and()
-			
-
 				
 		;
 		
-//		http.authorizeRequests()
-//			.antMatchers("/", "/home", "/login/**", "/logout", "/rest/isExist/**", "/rest/member/create", "/join/**", "/temp/**", "/file/**").permitAll()
-//			.antMatchers("/admin/**", "/api/**", "/rest/**", "/socket/test/**").hasAnyRole("ADMIN")
-//			.antMatchers("/user/my_page", "/user/ifrm/my_page").hasAnyRole("TEMP", "USER", "ADMIN")
-//			.antMatchers("/user/**", "/rest/user/**", "/storage/**").hasAnyRole("USER", "ADMIN")
-//			.anyRequest()
-//			.authenticated()
-//			.and()
+
 
 
 	}

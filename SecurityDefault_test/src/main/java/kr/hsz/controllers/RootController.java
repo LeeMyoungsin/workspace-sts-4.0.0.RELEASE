@@ -27,6 +27,8 @@ public class RootController {
 			
 		model.addAttribute("serverTime", formattedDate );
 		
+//		throw new RuntimeExceptionImpl("에러 테스트");
+		
 		return "index";
 	}
 	

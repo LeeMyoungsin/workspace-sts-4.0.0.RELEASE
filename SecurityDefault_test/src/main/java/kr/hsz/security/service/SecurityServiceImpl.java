@@ -13,18 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class SecurityServiceImpl implements SecurityService {
-
-//	@Override
-//	public String findLoggedInUsername() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public void autologin(String username, String password) {
-//		// TODO Auto-generated method stub
-//
-//	}
 	
 	@Autowired
     private UserDetailsService userDetailsService;
@@ -51,7 +39,7 @@ public class SecurityServiceImpl implements SecurityService {
  
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            log.debug(String.format("Auto login %s successfully!", password));
+            logger.debug(String.format("Auto login %s successfully!", password));
         }
     }
 
