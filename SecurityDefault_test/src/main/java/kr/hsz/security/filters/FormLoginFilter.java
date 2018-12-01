@@ -1,5 +1,6 @@
 package kr.hsz.security.filters;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -18,13 +19,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.hsz.dto.FormLoginDto;
-import kr.hsz.security.jwt.JwtDecoder;
 import kr.hsz.security.tokens.PreAuthorizationToken;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FormLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-	private static final Logger logger = LoggerFactory.getLogger(FormLoginFilter.class);
-	
     private AuthenticationSuccessHandler authenticationSuccessHandler;
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -48,16 +48,11 @@ public class FormLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
     	
-    	logger.info(">>>>> FormLoginFilter 000000000");
-    	
-        FormLoginDto dto = new ObjectMapper().readValue(req.getReader(), FormLoginDto.class);
-        
-        logger.info(">>>>> FormLoginFilter 000000001");
+//        FormLoginDto dto = new ObjectMapper().readValue(req.getReader(), FormLoginDto.class);
+        FormLoginDto dto = new ObjectMapper().readValue(new File("logininfo.json"), FormLoginDto.class);
         
         PreAuthorizationToken token = new PreAuthorizationToken(dto);
 
-        logger.info(">>>>> FormLoginFilter 000000002");
-        
         return super.getAuthenticationManager().authenticate(token);
     }
 
@@ -69,6 +64,8 @@ public class FormLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    	
+    	
         AuthenticationFailureHandler handler = (req, res, exception) -> {
             Logger log = LoggerFactory.getLogger("authentication_failure");
 

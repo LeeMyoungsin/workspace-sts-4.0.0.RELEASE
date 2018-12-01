@@ -18,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class LoginFailureHandlerImpl implements AuthenticationFailureHandler {
 
-//	private static final Logger logger = LoggerFactory.getLogger(LoginFailureHandlerImpl.class);
-	
 	private String userIdName;
 	private String userPwName;
 	private String loginRedirectName;
@@ -27,8 +25,8 @@ public class LoginFailureHandlerImpl implements AuthenticationFailureHandler {
 	private String defaultFailureUrl;
 	
 	public LoginFailureHandlerImpl(){
-		this.userIdName = "userId";
-		this.userPwName = "userPassword";
+		this.userIdName = "username";
+		this.userPwName = "password";
 		this.loginRedirectName = "loginRedirect";
 		this.exceptionMsgName = "exceptionmsg";
 		this.defaultFailureUrl = "/login?ng";
@@ -44,7 +42,6 @@ public class LoginFailureHandlerImpl implements AuthenticationFailureHandler {
 
 		logger.info(authException.getMessage());
 		logger.debug(authException.getLocalizedMessage());
-		
 		for(StackTraceElement s : authException.getStackTrace()){
 			String info = String.format("ClassName[%s] - FileName[%s] - MethodName[%s] : LineNum[%s] / NativeMethod[%s]"
 							, s.getClassName(), s.getFileName(), s.getMethodName(), s.getLineNumber() , s.isNativeMethod());

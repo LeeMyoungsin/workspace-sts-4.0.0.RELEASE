@@ -12,16 +12,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.hsz.security.filters.FormLoginFilter;
 import kr.hsz.security.handlers.AccessDeniedHandlerImpl;
 import kr.hsz.security.handlers.LoginFailureHandlerImpl;
 import kr.hsz.security.handlers.LoginSuccessHandlerImpl;
 import kr.hsz.security.handlers.LogoutSuccessHandlerImpl;
+import kr.hsz.security.providers.FormLoginAuthenticationProvider;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -35,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired private LogoutSuccessHandlerImpl logoutSuccessHandler;
 	@Autowired private AccessDeniedHandlerImpl 	accessDeniedHandler;
 	
+	@Autowired private FormLoginAuthenticationProvider provider;
 	
 	@Bean
     public PasswordEncoder passwordEncoder() {
@@ -52,12 +56,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+	protected FormLoginFilter formLoginFilter() throws Exception {
+        FormLoginFilter filter = new FormLoginFilter("/login", loginSuccessHandler, null);
+        filter.setAuthenticationManager(authenticationManagerBean());
+
+        return filter;
+    }
 	
 	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-	}
+
     
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -71,7 +79,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CharacterEncodingFilter filter = new CharacterEncodingFilter();
 		filter.setEncoding("UTF-8");
 		filter.setForceEncoding(true);
-		http.addFilterBefore(filter,CsrfFilter.class);
+		
+		http.addFilterBefore(filter,CsrfFilter.class)
+//			.addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+		;
 		
 		// h2 console 사용을 위한 설정 시작 
 		http
@@ -81,7 +92,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.headers()
 				.frameOptions()
-				.sameOrigin()	//.disable()
+				/* sameOrigin : 
+				 * 동일한 출처에서 온 모든 요청이이 응용 프로그램의 프레임을 허용하도록 지정하십시오. 
+				 * 예를 들어 응용 프로그램이 example.com에서 호스팅 된 경우 example.com은 응용 프로그램의 
+				 * 프레임을 구성 할 수 있지만 evil.com은 응용 프로그램의 프레임을 구성 할 수 없습니다.
+				 * */
+				.sameOrigin()
+				//.disable()
 		;
 		// h2 console 사용을 위한 설정 끝
 		
@@ -139,7 +156,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	
 	
-	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		
+//		auth.authenticationProvider(provider);
+		
+		
+		
+	}
 	
 	
 	

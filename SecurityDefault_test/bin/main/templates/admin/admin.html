@@ -22,6 +22,8 @@
 <body>
 
 	<h3>Admin</h3>
+	
+	<a href="/" th:href="@{/}" th:value="메인화면으로">메인으로 가기</a>
    
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out" />

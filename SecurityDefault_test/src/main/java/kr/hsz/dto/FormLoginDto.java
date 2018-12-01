@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FormLoginDto {
 
-	@JsonProperty("userid")
+	@JsonProperty("username")
 	private String id;
 	
 	@JsonProperty("password")

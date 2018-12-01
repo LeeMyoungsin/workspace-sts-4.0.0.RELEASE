@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -21,10 +19,12 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginSuccessHandlerImpl.class);
 	private RequestCache requestCache = new HttpSessionRequestCache();
 	private String targetUrlParameter;
 	private String defaultUrl;
@@ -46,6 +46,7 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
 			throws IOException, ServletException {
+		logger.info(">>>>>>>>>>>>>>>LoginSuccessHandlerImpl");
 /*		
 		UserImpl userImpl = (UserImpl) auth.getPrincipal();
 		Account account = userImpl.getAccount();
@@ -68,6 +69,8 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 		
 		*/
 		clearAuthenticationAttributes(req);
+		
+		logger.info(">>>>>>>>>>>>>>>LoginSuccessHandlerImpl2");
 		
 		switch(decideRedirectStrategy(req, res)) {
 		case 1:
@@ -98,6 +101,9 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 	private void useSessionUrl(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		SavedRequest savedRequest = requestCache.getRequest(req, res);
 		String targetUrl = savedRequest.getRedirectUrl();
+		
+		logger.info(">>>>>>>>>useSessionUrl>>>>>>targetUrl : {}", targetUrl);
+		
 		redirectStrategy.sendRedirect(req, res, targetUrl);
 	}
 
@@ -130,6 +136,7 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 					}
 				}
 			}
+			logger.info(">>>>>>>>>>>>>>>result : {}", result);
 			return result;
 		}
 		

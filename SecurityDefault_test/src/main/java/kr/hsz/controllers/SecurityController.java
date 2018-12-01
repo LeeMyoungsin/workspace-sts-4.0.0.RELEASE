@@ -22,11 +22,6 @@ public class SecurityController {
 	@Autowired AccountService accountSercice;
 	@Autowired SecurityService securityService;
 
-//	@RequestMapping("/login_view")
-//	public String loginView() {
-//		return "login";
-//	}
-
 	// 로그인
 	@RequestMapping("/login_view")
 	public String login(Model model, String error, String logout, HttpServletRequest request) {
@@ -60,11 +55,5 @@ public class SecurityController {
 		return "redirect:/";
 	}
 
-	/*
-	// 권한없는 페이지를 들어갔을때
-	@RequestMapping("/403")
-	public String access() {
-		return "error/403";
-	}
-*/
+
 }
